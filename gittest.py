@@ -1,4 +1,4 @@
 import git 
 
-g = git.cmd.Git("https://github.com/zackks/rpi-latest")
+g = git.cmd.Git("rpi-latest")
 g.pull()
