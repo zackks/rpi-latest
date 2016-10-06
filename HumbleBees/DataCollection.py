@@ -11,8 +11,9 @@ from adxl345 import ADXL345
 from gps import *
 
 #import self coded python scripts
-from UploadManager import *
+from UploadManagerV3 import *
 from ConnectionManager import *
+from GitManager import *
 
 
 #initialize necessary global variables
@@ -43,16 +44,17 @@ uploadInterval = 60 #in seconds
 frequency = 10 #no of times per while loop for accelerometer
 
 #searches for internet connection & upload data to database in intervals
-def UploadDataOnInterval():
+def OnInterval():
 	
 	global uploading
 	
-	threading.Timer(uploadInterval,UploadDataOnInterval).start()
+	threading.Timer(uploadInterval,OnInterval).start()
 	try:
 		if uploading != True:
 		
 				uploading = True
 				UploadData()
+				GitPull()
 				
 				uploading = False
 		
@@ -72,7 +74,7 @@ def UploadDataOnInterval():
 #opens and get ready sqlite for writing of sensor values
 CreateTables(cursorGps, cursorAccel)
 
-UploadDataOnInterval()
+OnInterval()
 
 
 #main infinite loop
