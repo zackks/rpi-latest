@@ -42,7 +42,7 @@ running = True #setting the thread running to true
 adxl345 = ADXL345() #initialize library for accelerometer
 
 # hardcoded userId reflects who is the volunteer, 0 is for administrator
-User.id = 99
+userId = User.id
 
 uploadInterval = 60 #in seconds
 frequency = 10 #no of times per while loop for accelerometer
