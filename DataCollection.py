@@ -1,4 +1,5 @@
 #import python libraries
+import sys
 import os
 import time
 import threading
@@ -15,6 +16,9 @@ from UploadManager import *
 from ConnectionManager import *
 from GitManager import *
 
+sys.path.insert(0, '/home/pi/')
+import User
+sys.path.insert(0, '/home/pi/rpi-latest')
 
 #initialize necessary global variables
 global connGps
