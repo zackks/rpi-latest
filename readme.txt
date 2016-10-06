@@ -1,0 +1,1 @@
+This folder will only include the latest version of the RPi.
