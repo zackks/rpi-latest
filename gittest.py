@@ -1,4 +1,5 @@
 import git 
 
-g = git.cmd.Git("rpi-latest")
-g.pull()
+ repo = git.Repo('repo_name')
+ o = repo.remotes.origin
+ o.pull()
