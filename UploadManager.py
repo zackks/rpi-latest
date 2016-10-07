@@ -34,14 +34,14 @@ def UploadData():
 			#for each  gps sensor data entry, break it up and insert into database
 			#for mysql, rmb to unquote table headers and add IGNORE after INSERT
 			for rowGps in cursorGps:
-				cursorDB.execute("""INSERT INTO mtcoord
+				cursorDB.execute("""INSERT INTO coord2
 						  ("userId", "timestamp", "latitude", "longitude", "numSatellite")
 						  VALUES (%s,%s,%s,%s,%s)""", (str(rowGps[0]), str(rowGps[1]), str(rowGps[2]), str(rowGps[3]), str(rowGps[4])))
 				connDB.commit()
 			
 			#for each  accelerometer sensor data entry, break it up and insert into database
 			for rowAccel in cursorAccel:
-				cursorDB.execute("""INSERT INTO mtaxis
+				cursorDB.execute("""INSERT INTO axis2
 						   ("userId", "timestamp", "xAxis", "yAxis", "zAxis")
 						   VALUES (%s, %s, %s, %s, %s)""", (str(rowAccel[0]), str(rowAccel[1]), str(rowAccel[2]), str(rowAccel[3]), str(rowAccel[4])))
 				connDB.commit()
