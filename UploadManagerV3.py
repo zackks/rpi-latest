@@ -5,7 +5,6 @@ from WifiSearch import *
 import threading
 import urllib2
 import json
-import requests
 
 def UploadData():
 	
@@ -39,57 +38,37 @@ def UploadData():
 			
 			dataCoord = []
 			dataAxis =[]
-
+			
 			for rowGps in cursorGps:
 						  
-				userId = str(rowGps[0])
-				timestampRaw = str(rowGps[1])
-				timestamp = str("" + timestampRaw[:10]) + "T" + str(timestampRaw[11:23]) + "Z" 
-				timestampstr = str(timestamp)
-				latitude = str(rowGps[2])
-				longitude = str(rowGps[3])
-				numSat = str(rowGps[4])
-				
-				print rowGps[0]
-				print ""
-				print rowGps[2]
-				print rowGps[3]
-				print rowGps[4]
+				userId = rowGps[0]
+				timestampRaw = rowGps[1]
+				timestampRaw = str(timestampRaw)
+				if timestampRaw == "0":
+					print timestampRaw
+					timestamp= "0"
+				else:
+					timestamp = timestampRaw[:10] + 'T' + timestampRaw[11:] + 'Z'
+				latitude = rowGps[2]
+				longitude = rowGps[3]
+				numSat = rowGps[4]
 						  
 				dataCoord = dataCoord + [
 				  {
-					 "userId": userId,
-					 "timestamp": timestamp,
-					 "latitude": latitude,
-					 "numSat": numSat,
-					 "longitude":longitude
+					 "userId": str(userId),
+					 "timestamp": str(timestamp),
+					 "latitude": str(latitude),
+					 "longitude":str(longitude),
+					 "numSat": str(numSat)
 				  }
 				]
-				#print 'this is row 0 ---   ', rowGps[0]
-				#print 'this is row 1 ---   ', rowGps[1]
-				#print 'this is row 2 ---   ', rowGps[2]
-				#print 'this is row 3 ---   ', rowGps[3]
-				#print 'this is row 4 ---   ', rowGps[4]
-				
-			#print dataCoord
 			
-			
-			#print json.dumps(dataCoord)
+			print dataCoord
 			print 'GPS sqlite data extracted. Attempting to POST GPS data...'
+			reqCoord = urllib2.Request('http://wheelroutes.icitylab.com/rest/coordinate/coordinates')
+			reqCoord.add_header('Content-Type', 'application/json')
 			
-
-			#print dataCoord
-			
-			#reqGps = urllib2.Request('http://wheelroutes-humblebees.icitylab.com/rest/coordinate/coordinates')
-			#reqGps.add_header('Content-Type','application/json')
-			#reqGps.add_header('Accept', '*/*')
-			
-			#responseGps = urllib2.urlopen(reqGps, json.dumps(dataCoord))
-			
-			headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-			rGps = requests.post('http://wheelroutes.icitylab.com/rest/coordinate/coordinates', data=json.dumps(dataCoord), headers=headers)
-			
-			dataCoord=[]
+			responseGPS = urllib2.urlopen(reqCoord,json.dumps(dataCoord))
 			
 			print 'Extracting axis sqlite data...'
 			
@@ -97,7 +76,12 @@ def UploadData():
 			for rowAccel in cursorAccel:
 				userId = rowAccel[0]
 				timestampRaw = rowAccel[1]
-				timestamp = timestampRaw[:10] + 'T' + timestampRaw[10:] + 'Z'
+				timestampRaw = str(timestampRaw)
+				if timestampRaw == "0":
+					print timestampRaw
+					timestamp= "0"
+				else:
+					timestamp = timestampRaw[:10] + 'T' + timestampRaw[11:] + 'Z'
 				xAxis = rowAccel[2]
 				yAxis = rowAccel[3]
 				zAxis = rowAccel[4]
@@ -111,20 +95,14 @@ def UploadData():
 					 "zAxis": str(zAxis)
 				  }
 				]
-
-			print dataAxis
+				
 			print 'Axis sqlite data extracted, attempting to POST axis data...'
 			
-			#reqAxis = urllib2.Request('http://wheelroutes-humblebees.rhcloud.com/rest/axis/axes')
-			#reqAxis.add_header('Content-Type', 'application/json')
+			reqAxis = urllib2.Request('http://wheelroutes.icitylab.com/rest/axis/axes')
+			reqAxis.add_header('Content-Type', 'application/json')
 				
-			#responseAxis = urllib2.urlopen(reqAxis, json.dumps(dataAxis))
-			
-			headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-			rAxis = requests.post('http://wheelroutes.icitylab.com/rest/axis/axes', data=json.dumps(dataAxis), headers=headers)
-			
-			dataAxis = []
-			
+			responseAxis = urllib2.urlopen(reqAxis, json.dumps(dataAxis))
+				
 			print "Values uploaded. Attempting to DROP tables..."
 			
 			DropTables(cursorGps, cursorAccel)
@@ -160,10 +138,10 @@ def CreateTables(cursorgps, cursoraccel):
 	try:
 		
 		cursorgps.execute('''
-		CREATE TABLE IF NOT EXISTS Coordinate (userId CHAR(2), timestamp CHAR(26), latitude DOUBLE, longitude DOUBLE, numSatellite CHAR(3))''')
+		CREATE TABLE IF NOT EXISTS Coordinate (userId CHAR(2), timestamp TEXT, latitude DOUBLE, longitude DOUBLE, numSatellite CHAR(3))''')
 		
 		cursoraccel.execute('''
-		CREATE TABLE IF NOT EXISTS Accelerometer (userId CHAR(2), timestamp CHAR(26), xAxis FLOAT, yAxis FLOAT, zAxis FLOAT)''')
+		CREATE TABLE IF NOT EXISTS Accelerometer (userId CHAR(2), timestamp TEXT, xAxis FLOAT, yAxis FLOAT, zAxis FLOAT)''')
 	
 	except Exception, e:
 		print e
