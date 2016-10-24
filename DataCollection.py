@@ -88,7 +88,7 @@ def OTA_Update():
 		GitPull()
 	except Exception, er:
 		print 'Problem pulling updates...'
-		print e
+		print er
 
 #opens and get ready sqlite for writing of sensor values
 CreateTables(cursorGps, cursorAccel)
