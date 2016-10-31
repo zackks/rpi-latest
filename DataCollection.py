@@ -14,7 +14,7 @@ from adxl345 import ADXL345
 from gps import *
 
 #import self coded python scripts
-from UploadManager import *
+from UploadManagerV3 import *
 from ConnectionManager import *
 from GitManager import *
 

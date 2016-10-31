@@ -56,7 +56,7 @@ def UploadData():
 				dataCoord = dataCoord + [
 				  {
 					 "userId": str(userId),
-					 "timestamp": str(timestamp),
+					 "timestamp": str(timestampRaw),
 					 "latitude": str(latitude),
 					 "longitude":str(longitude),
 					 "numSat": str(numSat)
@@ -89,7 +89,7 @@ def UploadData():
 				dataAxis = dataAxis + [
 				  {
 					 "userId": str(userId),
-					 "timestamp": str(timestamp),
+					 "timestamp": str(timestampRaw),
 					 "xAxis": str(xAxis),
 					 "yAxis":str(yAxis),
 					 "zAxis": str(zAxis)
